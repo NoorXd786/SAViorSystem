@@ -49,11 +49,10 @@ class SibylClient(TelegramClient):
                 try:
                     if allow_unknown:
                         flags, unknown = parser.parse(split[1], known=True)
-                        if unknown:
-                            if any([x for x in unknown if "-" in x]):
-                                parser.parse(
-                                    split[1]
-                                )  # Trigger the error because unknown args are not allowed to have - in them.
+                        if unknown and any(x for x in unknown if "-" in x):
+                            parser.parse(
+                                split[1]
+                            )  # Trigger the error because unknown args are not allowed to have - in them.
                     else:
                         flags = parser.parse(split[1])
                 except ParseError as exce:
@@ -83,10 +82,7 @@ class SibylClient(TelegramClient):
         message=False,
     ) -> bool:
         """Gbans & Fbans user."""
-        if self.gban_logs:
-            logs = self.gban_logs
-        else:
-            logs = self.log
+        logs = self.gban_logs or self.log
         if not auto:
             for i in logs:
                 await self.send_message(
@@ -130,10 +126,7 @@ class SibylClient(TelegramClient):
         )
 
     async def ungban(self, target: int = None, reason: str = None) -> bool:
-        if self.gban_logs:
-            logs = self.gban_logs
-        else:
-            logs = self.log
+        logs = self.gban_logs or self.log
         for i in logs:
             await self.send_message(
                 i, f"/ungban [{target}](tg://user?id={target}) {reason}"
