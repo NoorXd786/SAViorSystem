@@ -1,8 +1,10 @@
-from telethon.tl.functions.users import GetFullUserRequest
-from Sibyl_System import System, system_cmd
 from telethon.sync import events
+from telethon.tl.functions.users import GetFullUserRequest
 
-@System.on(system_cmd(pattern=r'whoiso1'))
+from Sibyl_System import System, system_cmd
+
+
+@System.on(system_cmd(pattern=r"whoiso1"))
 async def whois(event):
     try:
         to_get = event.pattern_match.group(1)
@@ -15,7 +17,7 @@ async def whois(event):
     try:
         to_get = int(to_get)
     except Exception:
-        pass 
+        pass
     try:
         data = await System(GetFullUserRequest(to_get))
     except Exception:
@@ -27,7 +29,7 @@ async def whois(event):
     )
 
 
-@System.on(events.NewMessage(pattern = "[?.]start"))
+@System.on(events.NewMessage(pattern="[?.]start"))
 async def start(event):
     await event.reply("Heya I'm Alive :D")
 

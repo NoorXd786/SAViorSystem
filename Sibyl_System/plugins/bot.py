@@ -1,14 +1,13 @@
-from Sibyl_System import System, session, INSPECTORS, ENFORCERS, Sibyl_logs
-from Sibyl_System.strings import proof_string, scan_request_string, reject_string
-from Sibyl_System.plugins.Mongo_DB.gbans import get_gban, get_gban_by_proofid
-import Sibyl_System.plugins.Mongo_DB.bot_settings as db
-
-from telethon import events, custom
-
-from typing import Union
-import logging
-import re
 import asyncio
+import re
+from typing import Union
+
+from telethon import custom, events
+
+import Sibyl_System.plugins.Mongo_DB.bot_settings as db
+from Sibyl_System import ENFORCERS, INSPECTORS, System, session
+from Sibyl_System.plugins.Mongo_DB.gbans import get_gban, get_gban_by_proofid
+from Sibyl_System.strings import proof_string, reject_string, scan_request_string
 
 data = []
 DATA_LOCK = asyncio.Lock()

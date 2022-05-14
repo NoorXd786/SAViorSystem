@@ -1,6 +1,7 @@
-from Sibyl_System import system_cmd, System
 import asyncio
 import io
+
+from Sibyl_System import System, system_cmd
 
 
 @System.on(system_cmd("(term|terminal|shell) "))

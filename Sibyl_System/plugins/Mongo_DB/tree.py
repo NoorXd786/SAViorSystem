@@ -1,6 +1,7 @@
-from Sibyl_System import MONGO_CLIENT
 from datetime import datetime
 from random import choice
+
+from Sibyl_System import MONGO_CLIENT
 
 db = MONGO_CLIENT["Sibyl"]["Main"]
 

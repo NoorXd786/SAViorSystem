@@ -1,22 +1,19 @@
-from telethon import TelegramClient
 from functools import wraps
-from .strings import (
-    scan_approved_string,
-    bot_gban_string,
-    proof_string,
-    forced_scan_string,
-)
-from .utils import FlagParser, ParseError
+
+from telethon import TelegramClient
 
 from Sibyl_System import (
-    Sibyl_logs,
-    Sibyl_approved_logs,
-    GBAN_MSG_LOGS,
-    BOT_TOKEN,
-    API_ID_KEY,
     API_HASH_KEY,
+    API_ID_KEY,
+    BOT_TOKEN,
+    GBAN_MSG_LOGS,
+    Sibyl_approved_logs,
+    Sibyl_logs,
 )
-from Sibyl_System.plugins.Mongo_DB.gbans import update_gban, delete_gban
+from Sibyl_System.plugins.Mongo_DB.gbans import update_gban
+
+from .strings import bot_gban_string, scan_approved_string
+from .utils import FlagParser, ParseError
 
 
 class SibylClient(TelegramClient):
@@ -43,6 +40,7 @@ class SibylClient(TelegramClient):
                 self.groups[group] = []
             self.groups[group].append(func.__name__)
             parser = FlagParser(flags, help)
+
             @wraps(func)
             async def flags_decorator(event):
                 split = event.text.split(" ", 1)
@@ -52,8 +50,10 @@ class SibylClient(TelegramClient):
                     if allow_unknown:
                         flags, unknown = parser.parse(split[1], known=True)
                         if unknown:
-                            if any([x for x in unknown if '-' in x]):
-                                parser.parse(split[1]) # Trigger the error because unknown args are not allowed to have - in them.
+                            if any([x for x in unknown if "-" in x]):
+                                parser.parse(
+                                    split[1]
+                                )  # Trigger the error because unknown args are not allowed to have - in them.
                     else:
                         flags = parser.parse(split[1])
                 except ParseError as exce:
@@ -65,6 +65,7 @@ class SibylClient(TelegramClient):
                     await event.reply(f"{parser.get_help()}")
                     return
                 return await func(event, flags)
+
             self.add_event_handler(flags_decorator, e)
             return flags_decorator
 
@@ -89,23 +90,23 @@ class SibylClient(TelegramClient):
         if not auto:
             for i in logs:
                 await self.send_message(
-                i,
-                f"/gban [{target}](tg://user?id={target}) {reason} // By {enforcer} | #{msg_id}",
-            )
+                    i,
+                    f"/gban [{target}](tg://user?id={target}) {reason} // By {enforcer} | #{msg_id}",
+                )
                 await self.send_message(
-                i,
-                f"/fban [{target}](tg://user?id={target}) {reason} // By {enforcer} | #{msg_id}",
-            )
+                    i,
+                    f"/fban [{target}](tg://user?id={target}) {reason} // By {enforcer} | #{msg_id}",
+                )
         else:
             for i in logs:
                 await self.send_message(
-                i,
-                f"/gban [{target}](tg://user?id={target}) Auto Gban[${msg_id}] {reason}",
-            )
+                    i,
+                    f"/gban [{target}](tg://user?id={target}) Auto Gban[${msg_id}] {reason}",
+                )
                 await self.send_message(
-                i,
-                f"/fban [{target}](tg://user?id={target}) Auto Gban[${msg_id}] {reason}",
-            )
+                    i,
+                    f"/fban [{target}](tg://user?id={target}) Auto Gban[${msg_id}] {reason}",
+                )
         if bot:
             await self.send_message(
                 Sibyl_approved_logs,
@@ -135,9 +136,9 @@ class SibylClient(TelegramClient):
             logs = self.log
         for i in logs:
             await self.send_message(
-            i, f"/ungban [{target}](tg://user?id={target}) {reason}"
-        )
+                i, f"/ungban [{target}](tg://user?id={target}) {reason}"
+            )
         for i in logs:
             await self.send_message(
-            i, f"/unfban [{target}](tg://user?id={target}) {reason}"
-        )
+                i, f"/unfban [{target}](tg://user?id={target}) {reason}"
+            )

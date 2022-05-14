@@ -1,7 +1,8 @@
-from Sibyl_System import System, system_cmd
 import os
-import sys
 import subprocess
+import sys
+
+from Sibyl_System import System, system_cmd
 
 
 @System.on(system_cmd(pattern=r"sly gitpull"))
@@ -28,4 +29,3 @@ async def shutdown(event):
         return
     await event.reply("Shutting Down... ")
     await System.disconnect()
-

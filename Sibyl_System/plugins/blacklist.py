@@ -1,8 +1,10 @@
-from Sibyl_System import System, SIBYL, ENFORCERS, Sibyl_logs, system_cmd
 import re
+
+from telethon import events
+
 import Sibyl_System.plugins.Mongo_DB.message_blacklist as db
 import Sibyl_System.plugins.Mongo_DB.name_blacklist as wlc_collection
-from telethon import events
+from Sibyl_System import ENFORCERS, SIBYL, Sibyl_logs, System, system_cmd
 
 
 async def extract(flag, event):

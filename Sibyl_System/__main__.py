@@ -1,16 +1,17 @@
+import asyncio
+import importlib
+import logging
+import time
+
 from Sibyl_System import (
-    System,
-    system_cmd,
-    make_collections,
-    INSPECTORS,
     ENFORCERS,
+    INSPECTORS,
     Sibyl_logs,
+    System,
+    make_collections,
+    system_cmd,
 )
 from Sibyl_System.strings import on_string
-import logging
-import importlib
-import asyncio
-import time
 
 logging.basicConfig(
     format="[%(levelname) 5s/%(asctime)s] %(name)s: %(message)s", level=logging.WARNING
