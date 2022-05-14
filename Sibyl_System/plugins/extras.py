@@ -61,12 +61,12 @@ async def addenf(event) -> None:
         with open(json_file, "w") as file:
             json.dump(data, file, indent=4)
         await System.send_message(event.chat_id, "Added to enforcers, Restarting...")
-        if not event.from_id.user_id in SIBYL:
+        if event.from_id.user_id not in SIBYL:
             await add_enforcers(event.from_id.user_id, u_id)
         await System.disconnect()
         os.execl(sys.executable, sys.executable, *sys.argv)
         quit()
-    if not event.from_id.user_id in SIBYL:
+    if event.from_id.user_id not in SIBYL:
         await add_enforcers(event.from_id.user_id, u_id)
     await System.send_message(
         event.chat_id, f"Added [{u_id}](tg://user?id={u_id}) to Enforcers"
@@ -92,11 +92,11 @@ async def rmenf(event) -> None:
         str(u_id)
         ENF = os.environ.get("ENFORCERS")
         if ENF.endswith(u_id):
-            config["ENFORCERS"] = ENF.strip(" " + str(u_id))
+            config["ENFORCERS"] = ENF.strip(f" {u_id}")
         elif ENF.startswith(u_id):
-            config["ENFORCERS"] = ENF.strip(str(u_id) + " ")
+            config["ENFORCERS"] = ENF.strip(f"{u_id} ")
         else:
-            config["ENFORCERS"] = ENF.strip(" " + str(u_id) + " ")
+            config["ENFORCERS"] = ENF.strip(f" {u_id} ")
     else:
         with open(json_file, "r") as file:
             data = json.load(file)
@@ -132,10 +132,9 @@ async def join(event) -> None:
         link = event.text.split(" ", 1)[1]
     except BaseException:
         return
-    private = re.match(
+    if private := re.match(
         r"(https?://)?(www\.)?t(elegram)?\.(dog|me|org)/joinchat/(.*)", link
-    )
-    if private:
+    ):
         await System(ImportChatInviteRequest(private.group(5)))
         await System.send_message(event.chat_id, "Joined chat!")
         await System.send_message(
@@ -206,11 +205,11 @@ async def rmins(event) -> None:
     if HEROKU:
         ENF = os.environ.get("INSPECTORS")
         if ENF.endswith(u_id):
-            config["INSPECTORS"] = ENF.strip(" " + str(u_id))
+            config["INSPECTORS"] = ENF.strip(f" {u_id}")
         elif ENF.startswith(u_id):
-            config["INSPECTORS"] = ENF.strip(str(u_id) + " ")
+            config["INSPECTORS"] = ENF.strip(f"{u_id} ")
         else:
-            config["INSPECTORS"] = ENF.strip(" " + str(u_id) + " ")
+            config["INSPECTORS"] = ENF.strip(f" {u_id} ")
     else:
         with open(json_file, "r") as file:
             data = json.load(file)
@@ -232,7 +231,7 @@ async def rmins(event) -> None:
 @System.on(system_cmd(pattern=r"info ", allow_inspectors=True))
 async def info(event) -> None:
     data = (await get_data())["standalone"]
-    if not event.text.split(" ", 1)[1] in data.keys():
+    if event.text.split(" ", 1)[1] not in data.keys():
         return
     u = event.text.split(" ", 1)[1]
     msg = f"User: {u}\n"
@@ -259,10 +258,9 @@ async def resolve(event) -> None:
         link = event.text.split(" ", 1)[1]
     except BaseException:
         return
-    match = re.match(
+    if match := re.match(
         r"(https?://)?(www\.)?t(elegram)?\.(dog|me|org)/joinchat/(.*)", link
-    )
-    if match:
+    ):
         try:
             data = resolve_invite_link(match.group(5))
         except BaseException:
@@ -282,8 +280,7 @@ async def leave(event) -> None:
         link = event.text.split(" ", 1)[1]
     except BaseException:
         return
-    c_id = re.match(r"-(\d+)", link)
-    if c_id:
+    if c_id := re.match(r"-(\d+)", link):
         await System(LeaveChannelRequest(int(c_id.group(0))))
         await System.send_message(
             event.chat_id, f"Sylviorus has left chat with id[-{c_id.group(1)}]"
